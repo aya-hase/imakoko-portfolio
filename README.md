@@ -43,31 +43,31 @@ LINEの対話形式で条件を順番にヒアリングし、Next.jsのバック
 [ LINE ユーザー ]
 │ (1) メッセージ送信 / 選択肢タップ
 ▼
-[ POST /api/line/webhook ] (司令塔)
+[ LINE Webhook受信処理 (司令塔) ]
 │
-│ (2) ユーザーIDと入力を渡す
+│ (2) ユーザーIDと入力を配送
 ▼
-[ POST /api/conversation/next ]
-│ (3) 会話状態（ステート）の管理・条件の蓄積 ──> [ Supabase (DB) ]
+[ 会話状態（ステート）管理処理 ]
+│ (3) 会話の進捗・条件の蓄積 ──> [ Supabase (DB) ]
 │ (4) 「全条件が揃った」と判定したら次へ
 ▼
-[ POST /api/search/shops ]
-│ (5) 収集した条件をパラメーターに変換してリクエスト
+[ 店舗検索処理 ]
+│ (5) 収集した条件でリクエスト
 ▼
 [ ホットペッパー API ] ─── (6) 店舗リストの取得 ───┐
 │
 ┌─────────────────────────────────────────────┘
 ▼
-[ POST /api/ai/suggest ] (★あーやさん担当)
+[ AI提案文・厳選生成処理 ] 
 │
-├─ (7) DBから「前回の履歴（lastInteraction）」を取得 ──> [ Supabase (DB) ]
+├─ (7) DBから「前回の履歴」を取得 ──> [ Supabase (DB) ]
 │
 │ (8) 店舗リスト ＋ 前回の履歴 をプロンプトに注入
 ▼
 [ OpenAI API (gpt-4o) ]
 │ (9) 重複を避けた3件の厳選 ＋ 選定理由の生成
 ▼
-[ POST /api/line/webhook ]
+[ LINE Webhook受信処理 ]
 │ (10) Flex Message (カルーセル形式) を組み立て
 ▼
 [ LINE Messaging API ] ─── (11) ユーザーにリプライ ───> [ LINE ユーザー ]
